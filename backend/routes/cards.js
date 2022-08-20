@@ -40,6 +40,4 @@ router.route('/cards').post(function (req, res) {
         }
       });
 });
-
-
 module.exports = router;
