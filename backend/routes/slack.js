@@ -18,7 +18,7 @@ router.route('/slack').post(function(req, res) {
     };
   
     dbConnect
-      .collection('notes')
+      .collection('sprints')
       .insertOne(cardDocument, function (err, result) {
         if (err) {
           res.status(400).send('Error inserting note!');

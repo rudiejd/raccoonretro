@@ -13,7 +13,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(require('./routes/cards'));
+app.use(require('./routes/sprints'));
 app.use(require('./routes/slack'));
 
 // catch 404 and forward to error handler
