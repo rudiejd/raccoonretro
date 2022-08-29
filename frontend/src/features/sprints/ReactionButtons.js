@@ -10,7 +10,7 @@ const reactionEmoji = {
   eyes: '👀',
 }
 
-export const ReactionButtons = ({ post }) => {
+export const ReactionButtons = ({ sprint }) => {
   const [addReaction] = useAddReactionMutation()
 
   const reactionButtons = Object.entries(reactionEmoji).map(
@@ -21,10 +21,10 @@ export const ReactionButtons = ({ post }) => {
           type="button"
           className="muted-button reaction-button"
           onClick={() => {
-            addReaction({ postId: post.id, reaction: reactionName })
+            addReaction({ sprintId: sprint.id, reaction: reactionName })
           }}
         >
-          {emoji} {post.reactions[reactionName]}
+          {emoji} {sprint.reactions[reactionName]}
         </button>
       )
     }

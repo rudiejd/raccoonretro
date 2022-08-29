@@ -2,70 +2,53 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const apiSlice = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({ baseUrl: 'localhost:' }),
-  tagTypes: ['Post'],
+  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000/' }),
+  tagTypes: ['Sprint'],
   endpoints: (builder) => ({
-    getPosts: builder.query({
-      query: () => '/posts',
+    getSprints: builder.query({
+      query: () => '/sprints',
       providesTags: (result = [], error, arg) => [
-        'Post',
-        ...result.map(({ id }) => ({ type: 'Post', id })),
+        'Sprint',
+        ...result.map(({ id }) => ({ type: 'Sprint', id })),
       ],
     }),
-    getPost: builder.query({
-      query: (postId) => `/posts/${postId}`,
-      providesTags: (result, error, arg) => [{ type: 'Post', id: arg }],
+    getSprint: builder.query({
+      query: (sprintId) => `/sprints/${sprintId}`,
+      providesTags: (result, error, arg) => [{ type: 'Sprint', id: arg }],
     }),
-    addNewPost: builder.mutation({
-      query: (initialPost) => ({
-        url: '/posts',
+    addNewSprint: builder.mutation({
+      query: (initialSprint) => ({
+        url: 'sprints',
         method: 'POST',
-        body: initialPost,
+        body: initialSprint,
       }),
-      invalidatesTags: ['Post'],
+      invalidatesTags: ['Sprint'],
     }),
-    editPost: builder.mutation({
-      query: (post) => ({
-        url: `posts/${post.id}`,
+    editSprint: builder.mutation({
+      query: (sprint) => ({
+        url: `sprints/${sprint.id}`,
         method: 'PATCH',
-        body: post,
+        body: sprint,
       }),
-      invalidatesTags: (result, error, arg) => [{ type: 'Post', id: arg.id }],
+      invalidatesTags: (result, error, arg) => [{ type: 'Sprint', id: arg.id }],
     }),
-    addReaction: builder.mutation({
-      query: ({ postId, reaction }) => ({
-        url: `posts/${postId}/reactions`,
+    addCard: builder.mutation({
+      query: ({ sprintId, card }) => ({
+        url: `sprints/${sprintId.sprintId.toString()}/cards`,
         method: 'POST',
         // In a real app, we'd probably need to base this on user ID somehow
         // so that a user can't do the same reaction more than once
-        body: { reaction },
+        body: { card },
       }),
-      async onQueryStarted({ postId, reaction }, { dispatch, queryFulfilled }) {
-        // `updateQueryData` requires the endpoint name and cache key arguments,
-        // so it knows which piece of cache state to update
-        const patchResult = dispatch(
-          apiSlice.util.updateQueryData('getPosts', undefined, (draft) => {
-            // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
-            const post = draft.find((post) => post.id === postId)
-            if (post) {
-              post.reactions[reaction]++
-            }
-          })
-        )
-        try {
-          await queryFulfilled
-        } catch {
-          patchResult.undo()
-        }
-      },
+      invalidatesTags: ['Sprint']
     }),
   }),
 })
 
 export const {
-  useGetPostsQuery,
-  useGetPostQuery,
-  useAddNewPostMutation,
-  useEditPostMutation,
-  useAddReactionMutation,
+  useGetSprintsQuery,
+  useGetSprintQuery,
+  useAddNewSprintMutation,
+  useAddCardMutation,
+  useEditSprintMutation,
 } = apiSlice
